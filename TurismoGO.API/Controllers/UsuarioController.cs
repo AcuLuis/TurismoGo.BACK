@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TurismoGo.Domain.CORE.DTO;
 using TurismoGo.Domain.CORE.Entity;
 using TurismoGo.Domain.CORE.Interfaces;
 
@@ -31,10 +32,17 @@ namespace TurismoGO.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateUsuario([FromBody] Usuario usuario)
+        public async Task<IActionResult> CreateUsuario([FromBody] UsuarioCreateDTO usuario)
         {
-            await _usuarioRepository.InsertUsuario(usuario);
-            return Ok(usuario);
+            var dateNow = DateOnly.FromDateTime(DateTime.Now);
+            var u =new Usuario {Apellidos = usuario.Apellidos, CorreoElectronico = usuario.CorreoElectronico, FechaRegistro = dateNow, IdRol = usuario.IdRol, Nombre = usuario.Nombre, Contrasena=usuario.Contrasena };
+            var estado = await _usuarioRepository.InsertUsuario(u);
+            if (estado)
+            {
+                return Ok(usuario);
+            }   
+            return BadRequest();
+
         }
 
         [HttpPut("Update")]
@@ -53,6 +61,16 @@ namespace TurismoGO.API.Controllers
             if (!result)
                 return BadRequest();
             return Ok(id);
+        }
+        [HttpPost("Login/")]
+        public async Task<IActionResult> Login(string correo, string contraseña, int tipoUsuario)
+        {
+            var u=await _usuarioRepository.LoginUser(correo,contraseña,tipoUsuario);
+            if (u == null)
+            {
+                return BadRequest();
+            }
+            return Ok(u);
         }
     }
 }

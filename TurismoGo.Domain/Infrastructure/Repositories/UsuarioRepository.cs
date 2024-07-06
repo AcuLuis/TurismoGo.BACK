@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TurismoGo.Domain.CORE.DTO;
 using TurismoGo.Domain.CORE.Entity;
 using TurismoGo.Domain.CORE.Interfaces;
 using TurismoGo.Domain.Infrastructure.Data;
@@ -34,10 +35,10 @@ namespace TurismoGo.Domain.Infrastructure.Repositories
             return usuario;
         }
 
-        public async Task InsertUsuario(Usuario usuario)
+        public async Task<bool> InsertUsuario(Usuario usuario)
         {
             await _context.Usuario.AddAsync(usuario);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync()>0;
         }
 
         public async Task<bool> UpdateUsuario(Usuario usuario)
@@ -57,6 +58,15 @@ namespace TurismoGo.Domain.Infrastructure.Repositories
             _context.Usuario.Remove(usuario);
             int countRows = await _context.SaveChangesAsync();
             return countRows > 0;
+        }
+        public async Task<UsuarioDTO> LoginUser(string correo, string contraseña, int tipoUsuario)
+        {
+            var usuario = await _context.Usuario.Where(x => x.CorreoElectronico == correo && x.IdRol == tipoUsuario && x.Contrasena == contraseña).FirstOrDefaultAsync();
+            if (usuario == null)
+            {
+                return null;
+            }
+            return new UsuarioDTO { IdUsuario = usuario.IdUsuario,  Apellidos = usuario.Apellidos, CorreoElectronico = usuario.CorreoElectronico, FechaRegistro = usuario.FechaRegistro, IdRol = usuario.IdRol, Nombre = usuario.Nombre };
         }
     }
 

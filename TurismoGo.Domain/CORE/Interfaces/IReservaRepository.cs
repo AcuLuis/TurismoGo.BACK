@@ -9,5 +9,6 @@ namespace TurismoGo.Domain.CORE.Interfaces
         Task<IEnumerable<Reserva>> GetReservas();
         Task InsertReserva(Reserva reserva);
         Task<bool> UpdateReserva(Reserva reserva);
+        Task<IEnumerable<Reserva>> GetReservasByUser(int id);
     }
 }

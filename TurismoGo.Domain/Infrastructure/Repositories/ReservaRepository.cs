@@ -58,6 +58,10 @@ namespace TurismoGo.Domain.Infrastructure.Repositories
             int countRows = await _context.SaveChangesAsync();
             return countRows > 0;
         }
+        public async Task<IEnumerable<Reserva>> GetReservasByUser(int id)
+        {
+            return await _context.Reserva.Where(x => x.IdUsuario == id && x.Estado=="realizado").Include(i => i.IdActividadNavigation).ToListAsync();
+        }
     }
 
 }

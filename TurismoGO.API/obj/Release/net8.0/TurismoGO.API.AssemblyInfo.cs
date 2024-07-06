@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TurismoGO.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+58af4f9df6a6f2118f178eb6781520505bf73218")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7141a11c4a0257965f5239b7281788c033c8952c")]
 [assembly: System.Reflection.AssemblyProductAttribute("TurismoGO.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TurismoGO.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

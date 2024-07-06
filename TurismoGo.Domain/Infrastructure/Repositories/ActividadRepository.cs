@@ -58,5 +58,17 @@ namespace TurismoGo.Domain.Infrastructure.Repositories
             return countRows > 0;
 
         }
+        public async Task<IEnumerable<Actividad>> GetActividadByEmpresa(int id)
+        {
+            return await _context.Actividad.Where(x => x.IdEmpresa == id).ToListAsync();
+        }
+        public async Task<IEnumerable<Actividad>> GetListaUsuarios(int id)
+        {
+            return await _context.Actividad
+                                 .Where(x => x.IdEmpresa == id)
+                                 .Include(a => a.Reserva)
+                                     .ThenInclude(r => r.IdUsuarioNavigation)
+                                 .ToListAsync();
+        }
     }
 }

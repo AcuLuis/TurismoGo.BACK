@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TurismoGo.Domain.CORE.DTO;
 using TurismoGo.Domain.CORE.Entity;
 using TurismoGo.Domain.CORE.Interfaces;
 
@@ -55,6 +56,18 @@ namespace TurismoGO.API.Controllers
             if (!result)
                 return BadRequest();
             return Ok(id);
+        }
+
+        [HttpGet("GetReservas/{id}")]
+        public async Task<IActionResult> GetReservas(int id)
+        {   
+            var reservas = await _reservaRepository.GetReservasByUser(id);
+            if (reservas.Any())
+            {
+                var listas = reservas.Select(x => new ReservaDTO {Actividad = new ActividadDTO { NombreActividad = x.IdActividadNavigation.NombreActividad, Descripcion = x.IdActividadNavigation.Descripcion, Destino = x.IdActividadNavigation.Destino, FechaFin = x.IdActividadNavigation.FechaFin, FechaInicio = x.IdActividadNavigation.FechaInicio } });
+                return Ok(listas);
+            }
+            return NotFound();
         }
     }
 }

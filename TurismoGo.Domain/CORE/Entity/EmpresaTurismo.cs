@@ -20,4 +20,5 @@ public partial class EmpresaTurismo
     public DateOnly FechaRegistro { get; set; }
 
     public virtual ICollection<Actividad> Actividad { get; set; } = new List<Actividad>();
+
 }

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using TurismoGo.Domain.CORE.Entity;
 using TurismoGo.Domain.CORE.Interfaces;
 using System.Threading.Tasks;
+using TurismoGo.Domain.CORE.DTO;
+using TurismoGo.Domain.Infrastructure.Repositories;
 
 namespace TurismoGO.API.Controllers
 {
@@ -66,6 +68,44 @@ namespace TurismoGO.API.Controllers
             if (!result)
                 return NotFound(new { message = $"Actividad con id {id} no encontrada." });
             return Ok(new { message = $"Actividad con id {id} eliminada exitosamente." });
+        }
+
+        [HttpGet("GetActividades/{id}")]
+        public async Task<IActionResult> GetActividades(int id)
+        {
+            var actividades = await _actividadRepository.GetActividadByEmpresa(id);
+            if (actividades.Any())
+            {
+                var listas = actividades.Select(x => new ActividadDTO { NombreActividad = x.NombreActividad, Descripcion = x.Descripcion, Destino = x.Destino, FechaFin = x.FechaFin, FechaInicio = x.FechaInicio } );
+                return Ok(listas);
+            }
+            return NotFound();
+        }
+        [HttpGet("GetReservas/{id}")]
+        public async Task<IActionResult> GetReservas(int id)
+        {
+            var actividades = await _actividadRepository.GetListaUsuarios(id);
+            var reservas = actividades.SelectMany(a => a.Reserva);
+
+            if (reservas.Any())
+            {
+                var listas = reservas.Select(x => new ReservaSimpleDTO
+                {
+                    Estado = x.Estado,
+                    Usuario = new UsuarioSimpleDTO
+                    {
+                        Nombre = x.IdUsuarioNavigation.Nombre,
+                        Apellidos = x.IdUsuarioNavigation.Apellidos
+                    },
+                    Actividad = new ActividadSimpleDTO
+                    {
+                        NombreActividad = x.IdActividadNavigation.NombreActividad
+                    }
+                });
+
+                return Ok(listas);
+            }
+            return NotFound();
         }
     }
 }

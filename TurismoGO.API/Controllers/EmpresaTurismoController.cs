@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TurismoGo.Domain.CORE.DTO;
 using TurismoGo.Domain.CORE.Entity;
 using TurismoGo.Domain.CORE.Interfaces;
+using TurismoGo.Domain.Infrastructure.Repositories;
 
 namespace TurismoGO.API.Controllers
 {
@@ -33,10 +35,12 @@ namespace TurismoGO.API.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> CreateEmpresa([FromBody] EmpresaTurismo empresa)
+        public async Task<IActionResult> CreateEmpresa([FromBody] EmpresaCreateDTO empresa)
         {
-            await _empresaTurismoRepository.InsertEmpresaTurismo(empresa);
-            return CreatedAtAction(nameof(GetEmpresaById), new { id = empresa.IdEmpresa }, empresa);
+            var dateNow = DateOnly.FromDateTime(DateTime.Now);
+            var u = new EmpresaTurismo { Direccion = empresa.Direccion, Contrasena = empresa.NombreEmpresa, CorreoElectronico = empresa.CorreoElectronico, NombreEmpresa = empresa.NombreEmpresa, Telefono = empresa.Telefono,FechaRegistro=dateNow };
+            await _empresaTurismoRepository.InsertEmpresaTurismo(u);
+            return Ok(empresa);
         }
 
         [HttpPut("Update")]
@@ -55,6 +59,16 @@ namespace TurismoGO.API.Controllers
             if (!result)
                 return BadRequest();
             return Ok(id);
+        }
+        [HttpPost("Login/")]
+        public async Task<IActionResult> Login(string correo, string contraseña)
+        {
+            var u = await _empresaTurismoRepository.LoginEmpresa(correo, contraseña);
+            if (u == null)
+            {
+                return BadRequest();
+            }
+            return Ok(u);
         }
     }
 }
